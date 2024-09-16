@@ -1,26 +1,31 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react';
 
 function App() {
-  const [data, setData] = useState([]);
+  const [students, setStudents] = useState([]);
 
+  // Fetch data from the backend
   useEffect(() => {
-    // Fetch data from the backend API
-    axios.get('http://localhost:5000/api/data')
-      .then(response => {
-        setData(response.data);
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-      });
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/students');
+        const data = await response.json();
+        setStudents(data);  // Set fetched data to state
+      } catch (error) {
+        console.error('Error fetching students:', error);
+      }
+    };
+
+    fetchData();
   }, []);
 
   return (
     <div>
-      <h1>College Data</h1>
+      <h1>Students List</h1>
       <ul>
-        {data.map((item, index) => (
-          <li key={index}>{item}</li> // Replace column_name with the actual column name
+        {students.map((student) => (
+          <li key={student.id}>
+            {student.name} - {student.department} ({student.email})
+          </li>
         ))}
       </ul>
     </div>
